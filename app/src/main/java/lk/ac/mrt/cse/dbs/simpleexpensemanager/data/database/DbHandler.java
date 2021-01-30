@@ -1,4 +1,4 @@
-package lk.ac.mrt.cse.dbs.simpleexpensemanager.data.Database;
+package lk.ac.mrt.cse.dbs.simpleexpensemanager.data.database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -18,10 +18,10 @@ public class DbHandler extends SQLiteOpenHelper {
     private static final String TABLE1_NAME = "Account";
 
     // Column names
-    private String ACC_NUM="accountNo";
-    private String BANK_NAME="bankName";
-    private String HOLDER="accountHolderName";
-    private String BALANCE= "balance";
+    private static final String ACC_NUM="accountNo";
+    private static final String BANK_NAME="bankName";
+    private static final String HOLDER="accountHolderName";
+    private static final String BALANCE= "balance";
 
 
     public DbHandler(@Nullable Context context) {

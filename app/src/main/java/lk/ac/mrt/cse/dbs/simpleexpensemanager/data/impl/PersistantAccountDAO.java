@@ -1,22 +1,18 @@
 package lk.ac.mrt.cse.dbs.simpleexpensemanager.data.impl;
 
 import android.content.Context;
-import android.content.ContextWrapper;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.AccountDAO;
-import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.Database.DbHandler;
+import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.database.DbHandler;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.exception.InvalidAccountException;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.Account;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.ExpenseType;
 
 public class PersistantAccountDAO implements AccountDAO {
     private Context context;
-    private DbHandler dbHandler;
+    private DbHandler dbHandler = new DbHandler(this);
 
 
     public PersistantAccountDAO() {
@@ -29,8 +25,7 @@ public class PersistantAccountDAO implements AccountDAO {
 
     @Override
     public List<Account> getAccountsList() {
-        context=this.context;
-        dbHandler=new DbHandler(context);
+        dbHandler=new DbHandler(this);
         return dbHandler.getAllAccounts();
     }
 
