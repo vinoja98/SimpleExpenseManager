@@ -2,25 +2,27 @@ package lk.ac.mrt.cse.dbs.simpleexpensemanager.control;
 
 import android.content.Context;
 
-import lk.ac.mrt.cse.dbs.simpleexpensemanager.control.exception.ExpenseManagerException;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.AccountDAO;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.TransactionDAO;
-import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.impl.InMemoryAccountDAO;
-import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.impl.InMemoryTransactionDAO;
+import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.database.DbHandler;
+import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.exception.InvalidAccountException;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.impl.PersistantAccountDAO;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.impl.PersistantTransactionDAO;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.Account;
 
 public class PersistentExpenseManager extends ExpenseManager{
-    public PersistentExpenseManager(Context context) {
-        super();
+    private DbHandler dbHandler;
+
+    public PersistentExpenseManager(Context context){
+        this.dbHandler = new DbHandler(context);
+        setup();
     }
 
     @Override
-    public void setup() throws ExpenseManagerException {
-        TransactionDAO persistantTransactionDAO = new PersistantTransactionDAO();
+    public void setup()  {
+        TransactionDAO persistantTransactionDAO = new PersistantTransactionDAO(dbHandler);
         setTransactionsDAO(persistantTransactionDAO);
-        AccountDAO persistantAccountDAO = new PersistantAccountDAO();
+        AccountDAO persistantAccountDAO = new PersistantAccountDAO(dbHandler);
         setAccountsDAO(persistantAccountDAO);
 
         // dummy data

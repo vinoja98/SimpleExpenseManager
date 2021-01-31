@@ -7,21 +7,23 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.Account;
 
 public class DbHandler extends SQLiteOpenHelper {
-    private static final int VERSION = 1;
-    private static final String DB_NAME = "180537C";
-    private static final String TABLE1_NAME = "Account";
+    public static final int VERSION = 8;
+    public static final String DB_NAME = "180537C";
+    public static final String TABLE1_NAME = "Account";
+    public static final String TABLE2_NAME = "Trans";
 
-    // Column names
-    private static final String ACC_NUM="accountNo";
-    private static final String BANK_NAME="bankName";
-    private static final String HOLDER="accountHolderName";
-    private static final String BALANCE= "balance";
+    // Column names of Account table
+    public static final String ACC_NUM="accountNo";
+    public static final String BANK_NAME="bankName";
+    public static final String HOLDER="accountHolderName";
+    public static final String BALANCE= "balance";
+
+    //Column names of Transaction table
+    public static final String DATE="date";
+    public static final String EXPENSE_TYPE="expenseType";
+    public static final String AMOUNT="amount";
 
 
     public DbHandler(@Nullable Context context) {
@@ -32,14 +34,25 @@ public class DbHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String TABLE_CREATE_QUERY = "CREATE TABLE "+TABLE1_NAME+" " +
                 "("
-                +ACC_NUM+" TEXT PRIMARY KEY ,"
-                +BANK_NAME + " TEXT,"
-                +HOLDER + " TEXT,"
-                +BALANCE+" DOUBLE" +
+                +ACC_NUM+" TEXT PRIMARY KEY, "
+                +BANK_NAME + " TEXT NOT NULL, "
+                +HOLDER + " TEXT NOT NULL, "
+                +BALANCE+" DOUBLE NOT NULL CHECK ("+ BALANCE+" > 0)"+
                 ");";
 
 
         db.execSQL(TABLE_CREATE_QUERY);
+        String TABLE_CREATE_QUERY2 = "CREATE TABLE "+TABLE2_NAME+" " +
+                "("
+                +DATE + " TEXT NOT NULL, "
+                +ACC_NUM+" TEXT NOT NULL, "
+                +EXPENSE_TYPE + " TEXT NOT NULL, "
+                +AMOUNT+" DOUBLE NOT NULL CHECK ("+ AMOUNT+" > 0),"
+                + " FOREIGN KEY ("+ACC_NUM+") REFERENCES "+TABLE1_NAME+"("+ACC_NUM+")ON DELETE CASCADE\n" +
+                "ON UPDATE CASCADE);";
+        db.execSQL(TABLE_CREATE_QUERY2);
+
+
     }
 
     @Override
@@ -48,48 +61,10 @@ public class DbHandler extends SQLiteOpenHelper {
         String DROP_TABLE_QUERY = "DROP TABLE IF EXISTS "+ TABLE1_NAME;
         // Drop older table if existed
         db.execSQL(DROP_TABLE_QUERY);
+        db.execSQL("DROP TABLE IF EXISTS '" + TABLE2_NAME + "'");
         // Create tables again
         onCreate(db);
     }
 
-    // Add a single ACCOUNT
-    public void addAccount(Account account){
-        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
 
-        ContentValues contentValues=new ContentValues();
-
-        contentValues.put(ACC_NUM,account.getAccountNo());
-        contentValues.put(BANK_NAME,account.getBankName());
-        contentValues.put( HOLDER,account.getAccountHolderName());
-        contentValues.put(BALANCE,account.getBalance());
-
-        //save to table
-        sqLiteDatabase.insert(TABLE1_NAME,null,contentValues);
-        // close database
-        sqLiteDatabase.close();
-    }
-    // Get all accounts into a list
-    public List<Account> getAllAccounts(){
-
-        List<Account> accounts = new ArrayList<>();
-        SQLiteDatabase db = getReadableDatabase();
-        String query = "SELECT * FROM "+TABLE1_NAME;
-
-        Cursor cursor = db.rawQuery(query,null);
-
-        if(cursor.moveToFirst()){
-            do {
-                // Create new Account object
-                Account account = new Account();
-                account.setAccountNo(cursor.getString(0));
-                account.setBankName(cursor.getString(1));
-                account.setAccountHolderName(cursor.getString(2));
-                account.setBalance(cursor.getDouble(3));
-
-
-                accounts.add(account);
-            }while (cursor.moveToNext());
-        }
-        return accounts;
-    }
 }
