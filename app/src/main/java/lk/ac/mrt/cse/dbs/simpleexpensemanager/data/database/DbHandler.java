@@ -1,8 +1,6 @@
 package lk.ac.mrt.cse.dbs.simpleexpensemanager.data.database;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.Nullable;
@@ -20,7 +18,7 @@ public class DbHandler extends SQLiteOpenHelper {
     public static final String HOLDER="accountHolderName";
     public static final String BALANCE= "balance";
 
-    //Column names of Transaction table
+    //Column names of Trans table
     public static final String DATE="date";
     public static final String EXPENSE_TYPE="expenseType";
     public static final String AMOUNT="amount";

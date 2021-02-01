@@ -35,7 +35,7 @@ public class PersistantTransactionDAO implements TransactionDAO {
         contentValues.put(DbHandler.EXPENSE_TYPE, String.valueOf(expenseType));
         contentValues.put(DbHandler.AMOUNT, amount);
 
-        //insert new row to transaction table
+        //insert new row to Trans table
         db.insert(DbHandler.TABLE2_NAME, null, contentValues);
 
     }
